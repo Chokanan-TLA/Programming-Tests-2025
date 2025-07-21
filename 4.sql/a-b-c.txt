@@ -1,0 +1,49 @@
+/*--------------a. หายอดการซื้อเฉลี่ยต่อ Order ของ John Smith--------------*/
+
+        SELECT AVG(TotalOrderAmount) AS AverageOrderAmount
+        FROM (
+            SELECT
+                o.Id AS OrderId,
+                SUM(od.Quantity * od.UnitPrice) AS TotalOrderAmount
+            FROM
+                Customer c
+            JOIN
+                "Order" o ON c.Id = o.CustomerId
+            JOIN
+                OrderDetail od ON o.Id = od.OrderId
+            WHERE
+                c.Name = 'John Smith'
+            GROUP BY
+                o.Id
+        ) AS JohnSmithOrders;
+
+
+
+/*--------------b. สรุปยอดขายทั้งหมดของแต่ละ Product--------------*/
+
+            SELECT
+                p.Name AS ProductName,
+                SUM(od.Quantity * od.UnitPrice) AS TotalSales
+            FROM
+                Product p
+            JOIN
+                OrderDetail od ON p.Id = od.ProductId
+            GROUP BY
+                p.Name
+            ORDER BY
+                TotalSales DESC;
+
+
+/*--------------c. หาชื่อลูกค้าทุกคนที่เคยซื้อ Oculus Rift --------------*/
+            SELECT DISTINCT
+                c.Name AS CustomerName
+            FROM
+                Customer c
+            JOIN
+                "Order" o ON c.Id = o.CustomerId
+            JOIN
+                OrderDetail od ON o.Id = od.OrderId
+            JOIN
+                Product p ON od.ProductId = p.Id
+            WHERE
+                p.Name = 'Oculus Rift';
